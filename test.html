@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head> 
+    <meta charset="UTF-8"> 
+    <title>GTA X</title> 
+  </head> 
+  <body> 
+    <canvas id="myCanvas" width="1300" height="350"> 
+      <!-- Вставьте fallback содержимое здесь -->
+      К сожалению, ваш браузер не поддерживает технологию canvas
+    </canvas> 
+    <script>
+  const canvas = document.getElementById('myCanvas');
+  let ctx = canvas.getContext('2d');
+  let width = canvas.width, height = canvas.height;
+  let player = {
+    speed: 4,
+    gravity: 2,
+    x: 0,
+    y: 250,
+    width: 64,
+    height: 64,
+    sx: 64,
+    sy: 710,
+    sw: 64,
+    sh: 64,
+    skin: 'img/skin.png',
+    count: 0
+  }
+  let player_skin = new Image();
+  player_skin.src = player.skin;
+  player_skin.onload = function() {
+    reload();
+    // drawImage(player_skin, player.sx, player.sy, player.sw, player.sh, player.x, player.y, player.width, player.height, width, height, player.count);
+  }
+
+  function reload() {
+    drawImage(player_skin, player.sx, player.sy, player.sw, player.sh, player.x, player.y, player.width, player.height, width, height, player.count);  
+  }
+
+  function drawImage(img, sx, sy, sw, sh, x, y, width, height, cvsW, cvsH, count){
+    ctx.clearRect(0, 0, cvsW, cvsH);
+    ctx.strokeRect(0, 0, cvsW, cvsH);
+    ctx.drawImage(img, sx * count, sy, sw, sh, x, y, width, height);
+  }
+
+  function reset() {
+    player.count = 0;
+    player.sx = 64;
+    reload();
+  }
+
+  document.addEventListener('keydown', function(event){
+    if (event.keyCode == 39) {
+      player.sy = 710;
+      player.count++;
+      player.x += player.speed;
+      if (player.count >= 9) { // Всего 9 кадров ходьбы персонажа
+        player.count = 0;
+      }
+      if (player.x >= width) {
+        player.x = player.x - player.width;
+      }
+     reload();
+    } else if (event.keyCode == 37) {
+      player.sy = 580;
+      player.count++;
+      player.x -= player.speed;
+      if (player.count >= 9) { // Всего 9 кадров ходьбы персонажа
+        player.count = 0;
+      }
+      reload();
+    } else if (event.keyCode == 38) { // Прыжок
+      player.y -= 10;
+      reload();
+    } else if (event.keyCode == 40) { // Лечь
+      player.sy = 1290;
+      player.count++;
+      if (player.count >= 6) { // Всего 6 кадров в положений лежа персонажа
+        player.count = 5;
+      }
+      reload();
+    }
+    console.log(event.keyCode);
+  }, false);
+  document.addEventListener('keyup', function(event){
+    if (event.keyCode == 39) {
+      reset();
+    } else if (event.keyCode == 37) {
+      reset();
+    } else if (event.keyCode == 38) {
+    
+    } else if (event.keyCode == 40) {
+      player.count = 0;
+      reset();
+    }
+  }, false);
+</script>
+  </body> 
+</html>

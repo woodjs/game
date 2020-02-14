@@ -14,87 +14,111 @@
   let ctx = canvas.getContext('2d');
   let width = canvas.width, height = canvas.height;
   let player = {
-    speed: 4,
-    gravity: 2,
+    speed: 5,
+    gravity: 10,
     x: 0,
-    y: 250,
+    y: 250, //250
     width: 64,
     height: 64,
-    sx: 0, //64
+    sx: 0, // 64
     sy: 710,
     sw: 64,
     sh: 64,
     skin: 'img/skin.png',
-    count: 0
-  }
+    tick_count: 0
+  };
+  let keys = {}; // Объект с нжатыми клавишами
   let player_skin = new Image();
   player_skin.src = player.skin;
   player_skin.onload = function() {
-    reload();
-    // drawImage(player_skin, player.sx, player.sy, player.sw, player.sh, player.x, player.y, player.width, player.height, width, height, player.count);
+    gameLoop();
+    requestAnimationFrame(gameLoop);
   }
 
-  function reload() {
-    drawImage(player_skin, player.sx, player.sy, player.sw, player.sh, player.x, player.y, player.width, player.height, width, height, player.count);  
+  function gameLoop() {
+    if (player.tick_count >= 9) {
+      if (keys[68]) {
+        player.sy = 710;
+        player.x += player.speed;
+        if (player.sx === 512) {
+          player.sx = 0;
+        } 
+        player.sx += player.sw;
+        console.log(player.y);
+      } 
+
+      if (keys[65]) {
+        player.sy = 580;
+        player.x -= player.speed;
+        if (player.sx === 512) {
+          player.sx = 0;
+        }
+        player.sx += player.sw;
+        console.log(player.y);
+      }
+
+      if (keys[83]) {
+        player.sy = 1285;
+        if (player.sx == 320) { // 320 т.к всего 6 (отсчет с 0) кадров (Формула: 5 * 64 = 320 )
+          player.sx -= 64; // 320 - 64 = 256
+        } 
+        player.sx += player.sw;
+      }
+
+      if(keys[87]) {
+        player.y -= (player.gravity + 5);
+        console.log(player.y);
+      }
+      drawImage();
+      player.tick_count = 0;
+    }
+    player.tick_count++;
+    requestAnimationFrame(gameLoop);
   }
 
-  function drawImage(img, sx, sy, sw, sh, x, y, width, height, cvsW, cvsH, count){
-    ctx.clearRect(0, 0, cvsW, cvsH);
-    ctx.strokeRect(0, 0, cvsW, cvsH);
-    ctx.drawImage(img, sx * count, sy, sw, sh, x, y, width, height);
+  function drawImage() {
+    addEventListener('keydown', move_player, false);
+    addEventListener('keyup', stop_player, false);
+    if (player.y < 250) {
+      player.y += (player.gravity / 2);
+    }
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(player_skin, player.sx, player.sy, player.sw, player.sh, player.x, player.y, player.width, player.height);
   }
 
   function reset() {
-    player.count = 0;
-    player.sx = 64;
-    reload();
+    player.sx = 0;
+    player.tick_count = 0;
   }
 
-  document.addEventListener('keydown', function(event){
-    if (event.keyCode == 39) {
-      player.sy = 710;
-      player.count++;
-      player.x += player.speed;
-      if (player.count >= 9) { // Всего 9 кадров ходьбы персонажа
-        player.count = 0;
-      }
-      if (player.x >= width) {
-        player.x = player.x - player.width;
-      }
-     reload();
-    } else if (event.keyCode == 37) {
-      player.sy = 580;
-      player.count++;
-      player.x -= player.speed;
-      if (player.count >= 9) { // Всего 9 кадров ходьбы персонажа
-        player.count = 0;
-      }
-      reload();
-    } else if (event.keyCode == 38) { // Прыжок
-      player.y -= 10;
-      reload();
-    } else if (event.keyCode == 40) { // Лечь
-      player.sy = 1290;
-      player.count++;
-      if (player.count >= 6) { // Всего 6 кадров в положений лежа персонажа
-        player.count = 5;
-      }
-      reload();
+  function move_player(e) {
+    if (e.keyCode == 68) { //Ходьба в право
+      keys[e.keyCode] = true;
+    } else if (e.keyCode == 65) { //Ходьба в лево
+      keys[e.keyCode] = true;
+    } else if (e.keyCode == 83) { // Вниз 
+      keys[e.keyCode] = true;
+    } else if (e.keyCode == 87) { // Прыжок
+      keys[e.keyCode] = true;
     }
-    console.log(event.keyCode);
-  }, false);
-  document.addEventListener('keyup', function(event){
-    if (event.keyCode == 39) {
+    console.log(e.keyCode);
+  }
+
+  function stop_player(e) {
+    if (e.keyCode == 68) { //Ходьба в право
+      keys[e.keyCode] = false;
       reset();
-    } else if (event.keyCode == 37) {
+    } else if (e.keyCode == 65) { //Ходьба в лево
+      keys[e.keyCode] = false;
       reset();
-    } else if (event.keyCode == 38) {
-    
-    } else if (event.keyCode == 40) {
-      player.count = 0;
+    } else if (e.keyCode == 83) { // Вниз 
+      keys[e.keyCode] = false;
       reset();
+    } else if (e.keyCode == 87) { // Прыжок
+      keys[e.keyCode] = false;
     }
-  }, false);
+  }
+  
 </script>
   </body> 
 </html>

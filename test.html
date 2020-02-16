@@ -32,7 +32,7 @@
   };
   let coin = {
     x: 150,
-    y: 0,
+    y: 250,
     width: 16,
     height: 16,
     sx: 0,
@@ -152,26 +152,19 @@
     }
   }
   let coins = [];
-
   function generateCoins() {
     if (coin.sx >= 112) {
       coin.sx = 0;
     }
     coin.sx += coin.sw;
-    for(i = 0; i < 3; i++) {
-      coins[i] = {
-        status: coin.status,
-        x: coin.x * i,
-        width: coin.width,
-        id: i
-      };
-      coin.y = height - coin.height - land.height;
-      if (player.x + player.width >= coins[i].x + coins[i].width) {
-      coins[i].status = false;
-    }
-      if (coins[i].status == true) {
-        ctx.drawImage(coin_skin, coin.sx, coin.sy, coin.sw, coin.sh, coin.x * i, coin.y, coin.width, coin.height);
+    if (player.x + player.width >= coin.x && player.x + player.width <= coin.x + coin.width) { 
+      if (coin.status) {
+        coin.status = false; 
+        player.score++; 
       }
+    }
+    if (coin.status) {
+      ctx.drawImage(coin_skin, coin.sx, coin.sy, coin.sw, coin.sh, coin.x, coin.y, coin.width, coin.height);
     }
   }
   

@@ -86,11 +86,16 @@
       }
 
       if (keys[83]) {
-        player.sy = 1285;
-        if (player.sx == 320) { // 320 т.к всего 6 (отсчет с 0) кадров (Формула: 5 * 64 = 320 )
-          player.sx -= 64; // 320 - 64 = 256
-        } 
+        // player.sy = 1280;
+        // if (player.sx >= 320) { // 320 т.к всего 6 (отсчет с 0) кадров (Формула: 5 * 64 = 320 )
+        //   player.sx -= 64; // 320 - 64 = 256
+        // } 
+        // player.sx += player.sw;
+        if (player.sx >= 320) {
+         player.sx = 256;
+        }
         player.sx += player.sw;
+        player.sy = 1280;
       }
 
       if(keys[87]) {

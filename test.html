@@ -154,9 +154,10 @@
     }
   }
   let coins = [];
-  // function generatePosX() {
-  //   coin.x = Math.floor(Math.random() * 1000);
-  // }
+  function generatePosX() {
+    coin.x = Math.floor(Math.random() * 1000);
+    coin.status = true;
+  }
   function generateCoins() {
     if (coin.sx >= 112) {
       coin.sx = 0;
@@ -166,6 +167,7 @@
       if (coin.status) {
         coin.status = false; 
         player.score++; 
+        generatePosX();
       }
     }
     if (coin.status) {
